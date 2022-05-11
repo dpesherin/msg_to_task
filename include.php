@@ -43,11 +43,13 @@ class McartTaskOperations
 
         $arr_accomplices = [];
         $accomplices = CMailUtil::ExtractAllMailAddresses($arMessageFields["FIELD_CC"]);
-        foreach($accomplices as $el){
-            $rsUser = CUser::GetList(($by = "ID"), ($order = "desc"), array("email" => $el, "!NAME" => 'Гость'));
-            if ($oUser = $rsUser->Fetch()) {
-                $accompliceID = $oUser["ID"];
-                $arr_accomplices[] = $accompliceID;
+        if($accomplices != [""]){
+            foreach($accomplices as $el){
+                $rsUser = CUser::GetList(($by = "ID"), ($order = "desc"), array("email" => $el, "!NAME" => "Гость"));
+                if ($oUser = $rsUser->Fetch()) {
+                    $accompliceID = $oUser["ID"];
+                    $arr_accomplices[] = $accompliceID;
+                }
             }
         }
 
