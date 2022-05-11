@@ -1,0 +1,6 @@
+if (CModule::IncludeModule("mcart.taskfromemailce"))
+{	
+	$TASK = new McartTaskOperations;
+	$TASK->process($arMessageFields);
+
+}
