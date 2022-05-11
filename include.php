@@ -44,7 +44,7 @@ class McartTaskOperations
         $arr_accomplices = [];
         $accomplices = CMailUtil::ExtractAllMailAddresses($arMessageFields["FIELD_CC"]);
         foreach($accomplices as $el){
-            $rsUser = CUser::GetList(($by = "ID"), ($order = "desc"), array("email" => $el));
+            $rsUser = CUser::GetList(($by = "ID"), ($order = "desc"), array("email" => $el, "!NAME" => 'Гость'));
             if ($oUser = $rsUser->Fetch()) {
                 $accompliceID = $oUser["ID"];
                 $arr_accomplices[] = $accompliceID;
@@ -107,7 +107,7 @@ class McartTaskOperations
                 "ACCOMPLICES" => $arr_accomplices
             );
 
-            if(strpos($arMessageFields['SUBJECT'], "RE:") || strpos($arMessageFields['SUBJECT'], "Re:") !== false){
+            if(strpos($arMessageFields['SUBJECT'], "RE:") !== false || strpos($arMessageFields['SUBJECT'], "Re:") !== false){
                 $subject = substr($arMessageFields['SUBJECT'], 4);
                 $res = CTasks::GetList(
                     Array("TITLE" => "ASC"),
