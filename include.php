@@ -107,7 +107,7 @@ class McartTaskOperations
                 "ACCOMPLICES" => $arr_accomplices
             );
 
-            if(strpos($arMessageFields['SUBJECT'], "RE: ") !== false){
+            if(strpos($arMessageFields['SUBJECT'], "RE:") || strpos($arMessageFields['SUBJECT'], "Re:") !== false){
                 $subject = substr($arMessageFields['SUBJECT'], 4);
                 $res = CTasks::GetList(
                     Array("TITLE" => "ASC"),
@@ -115,14 +115,13 @@ class McartTaskOperations
                         "TITLE" => $subject,
                     )
                 );
-                if($res->GetNext()){
-                    $taskID = $res["ID"];
-                    $oTaskItem = \CTaskItem::getInstance($taskID, 1);
-                    // добавить коммент
+                if($item = $res->GetNext()){
+                    $taskID = $item["ID"];
+                    $oTaskItem = \CTaskItem::getInstance($taskID, $id_created);
                     $fields = array(
                         'AUTHOR_ID' => $id_created,
                         'USE_SMILES' => 'N',
-                        'POST_MESSAGE' => TxtToHTML($arMessageFields['BODY']),
+                        'POST_MESSAGE' => $arMessageFields['BODY'],
                         'FILES' => $files,
                         'AUX' => 'Y',
                     );
