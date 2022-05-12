@@ -21,7 +21,7 @@ class McartTaskOperations
         }
 
 
-        //Get sender adress from message headers
+        //Get sender address from message headers
         $from = CMailUtil::ExtractMailAddress($arMessageFields['FIELD_FROM']);
         //Get user id from Bitrix with email == sender email
         $rsUser = CUser::GetList(($by = "ID"), ($order = "desc"), array("email" => $from));
@@ -45,7 +45,7 @@ class McartTaskOperations
         $accomplices = CMailUtil::ExtractAllMailAddresses($arMessageFields["FIELD_CC"]);
         if($accomplices != [""]){
             foreach($accomplices as $el){
-                $rsUser = CUser::GetList(($by = "ID"), ($order = "desc"), array("email" => $el, "!NAME" => "Гость"));
+                $rsUser = CUser::GetList(($by = "ID"), ($order = "desc"), array("email" => $el));
                 if ($oUser = $rsUser->Fetch()) {
                     $accompliceID = $oUser["ID"];
                     $arr_accomplices[] = $accompliceID;
@@ -98,9 +98,10 @@ class McartTaskOperations
             foreach($diskFileID as $el){
                 array_push($files, 'n'.$el);
             }
+            $body = explode('С уважением', $arMessageFields['BODY']);
             $arFields = array(
                 "TITLE" => $arMessageFields['SUBJECT'],
-                "DESCRIPTION" => TxtToHTML($arMessageFields['BODY']),
+                "DESCRIPTION" => $body[0],
                 "RESPONSIBLE_ID" => $responsibleID,
                 "STATUS" => 2,
                 "GROUP_ID" => $groupID,
@@ -123,7 +124,7 @@ class McartTaskOperations
                     $fields = array(
                         'AUTHOR_ID' => $id_created,
                         'USE_SMILES' => 'N',
-                        'POST_MESSAGE' => $arMessageFields['BODY'],
+                        'POST_MESSAGE' => $body[0],
                         'FILES' => $files,
                         'AUX' => 'Y',
                     );
